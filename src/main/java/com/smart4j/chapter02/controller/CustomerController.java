@@ -21,7 +21,7 @@ import java.util.Map;
  * @author: sxj
  * @create: 2019-11-29 17:48
  **/
-@WebServlet("/cs")
+@WebServlet(urlPatterns = {"/cs/*"})
 public class CustomerController extends HttpServlet {
 
     private static CommonDao<Customer> commonDao;
@@ -33,18 +33,23 @@ public class CustomerController extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = req.getParameter("action");
-        if (action == null){
+        /**如果urlPattern配置为：/cs/*， 请求为：/cs/toAdd
+         * 则getServletPath=/cs,
+         *  getPathInfo=/toAdd
+         */
+        String pathInfo = req.getPathInfo();
+        String servletPath = req.getServletPath();
+        if (pathInfo == null){
             getList(req,resp);
-        }else if ("toAdd".equals(action)){
+        }else if ("/toAdd".equals(pathInfo)){
             toAdd(req,resp);
-        }else if ("addData".equals(action)){
+        }else if ("/addData".equals(pathInfo)){
             addData(req,resp);
-        }else if ("delData".equals(action)){
+        }else if ("/delData".equals(pathInfo)){
             delData(req,resp);
-        }else if ("toEdit".equals(action)){
+        }else if ("/toEdit".equals(pathInfo)){
             toEdit(req,resp);
-        }else if ("editData".equals(action)){
+        }else if ("/editData".equals(pathInfo)){
             editData(req,resp);
         }
 
@@ -68,13 +73,12 @@ public class CustomerController extends HttpServlet {
         String key,val;
         while (paramNames.hasMoreElements()){
             key = paramNames.nextElement();
-            if (!"action".equals(key)){
-                val = req.getParameter(key);
-                fieldMap.put(key,val);
-            }
+            val = req.getParameter(key);
+            fieldMap.put(key,val);
         }
         service.createCustomer(fieldMap);
-        resp.sendRedirect("cs");
+        String contextPath = req.getContextPath();
+        resp.sendRedirect(contextPath+"/cs");
     }
 
     //4 get 跳到edit页面
@@ -91,19 +95,21 @@ public class CustomerController extends HttpServlet {
         String key,val;
         while (paramNames.hasMoreElements()){
             key = paramNames.nextElement();
-            if (!"id".equals(key) && !"action".equals(key)){
+            if (!"id".equals(key)){
                 val = req.getParameter(key);
                 fieldMap.put(key,val);
             }
         }
         long id = Long.parseLong(req.getParameter("id"));
         service.updateCustomer(id,fieldMap);
-        resp.sendRedirect("cs");
+        String contextPath = req.getContextPath();
+        resp.sendRedirect(contextPath+"/cs");
     }
     //6 get ,删除数据后，跳到列表页面
     public void delData(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
         boolean isDel = service.deleteCustomer(Long.parseLong(id));
-        resp.sendRedirect("cs");
+        String contextPath = req.getContextPath();
+        resp.sendRedirect(contextPath+"/cs");
     }
 }

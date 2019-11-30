@@ -31,12 +31,12 @@
                 <td>${cs.telephone}</td>
                 <td>${cs.email}</td>
                 <td>${cs.remark}</td>
-                <td><a href="${BASE}/cs?action=toEdit&id=${cs.id}">编辑</a>
-                    <a href="${BASE}/cs?action=delData&id=${cs.id}">删除</a></td>
+                <td><a href="${BASE}/cs/toEdit?id=${cs.id}">编辑</a>
+                    <a href="${BASE}/cs/delData?id=${cs.id}">删除</a></td>
             </tr>
         </c:forEach>
     </table>
     <br>
-    <button onclick="javascript: window.location.href='${BASE}/cs?action=toAdd'">新增</button>
+    <button onclick="javascript: window.location.href='${BASE}/cs/toAdd'">新增</button>
 </body>
 </html>
